@@ -10,8 +10,12 @@ from telegram.ext import InlineQueryHandler
 from telegram.ext import CommandHandler
 
 TOKEN   = '116070187:AAE92oYWPF6H4L62L1V1uJGGL8o-83WknDg'
-TITLE   = 'Сиды: %d | Личи: %d'
-MESSAGE = '*%s*\n\n`%s`\n\n[Download torrent](%s)'
+TITLE   = 'Размер: {size} | Сиды: {seed} | Личи: {leech}'
+MESSAGE = \
+    '*{title}*\n\n' \
+    'Размер: *{size}* | Сиды: *{seed}* | Личи: *{leech}*\n\n' \
+    '`{magnet}`\n\n' \
+    '[Скачать торрент]({torrent})'
 
 def start(bot, update):
     bot.sendMessage(update.message.chat_id, text='Yo')
@@ -23,10 +27,10 @@ def handler(bot, update):
         for item in rutor.search(query)[:50]:
             results.append(InlineQueryResultArticle(
                 id=uuid4(),
-                title=TITLE % (item['seed'], item['leech']),
+                title=TITLE.format(**item),
                 description=item['title'],
                 input_message_content=InputTextMessageContent(
-                    MESSAGE % (item['title'], item['magnet'], item['torrent']),
+                    MESSAGE.format(**item),
                     parse_mode=ParseMode.MARKDOWN
                 )
             ))
